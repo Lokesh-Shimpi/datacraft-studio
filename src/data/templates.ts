@@ -1,0 +1,72 @@
+import { DatasetTemplate } from "@/types/dataset";
+
+export const datasetTemplates: DatasetTemplate[] = [
+  {
+    id: "employee",
+    name: "Employee Data",
+    description: "Employee records with name, department, salary",
+    icon: "👔",
+    columns: [
+      { id: "1", name: "Name", type: "name" },
+      { id: "2", name: "Age", type: "integer", options: { min: 22, max: 65 } },
+      { id: "3", name: "Department", type: "department" },
+      { id: "4", name: "Salary", type: "currency", options: { min: 40000, max: 150000, prefix: "$" } },
+      { id: "5", name: "Email", type: "email" },
+    ],
+  },
+  {
+    id: "student",
+    name: "Student Records",
+    description: "Student information with grades and courses",
+    icon: "🎓",
+    columns: [
+      { id: "1", name: "Name", type: "name" },
+      { id: "2", name: "Roll Number", type: "integer", options: { min: 1001, max: 9999 } },
+      { id: "3", name: "Grade", type: "custom", options: { values: ["A", "B", "C", "D", "F"] } },
+      { id: "4", name: "Course", type: "custom", options: { values: ["Computer Science", "Mathematics", "Physics", "Chemistry", "Biology"] } },
+      { id: "5", name: "GPA", type: "float", options: { min: 0, max: 4, decimals: 2 } },
+    ],
+  },
+  {
+    id: "ecommerce",
+    name: "E-Commerce Orders",
+    description: "Order records with products and pricing",
+    icon: "🛒",
+    columns: [
+      { id: "1", name: "Order ID", type: "uuid" },
+      { id: "2", name: "Customer Name", type: "name" },
+      { id: "3", name: "Product", type: "custom", options: { values: ["Laptop", "Phone", "Tablet", "Headphones", "Watch", "Camera"] } },
+      { id: "4", name: "Quantity", type: "integer", options: { min: 1, max: 10 } },
+      { id: "5", name: "Price", type: "currency", options: { min: 10, max: 2000, prefix: "$" } },
+      { id: "6", name: "Order Date", type: "date" },
+    ],
+  },
+  {
+    id: "medical",
+    name: "Medical Records",
+    description: "Patient records with diagnoses and treatments",
+    icon: "🏥",
+    columns: [
+      { id: "1", name: "Patient ID", type: "uuid" },
+      { id: "2", name: "Name", type: "name" },
+      { id: "3", name: "Age", type: "integer", options: { min: 1, max: 100 } },
+      { id: "4", name: "Blood Type", type: "custom", options: { values: ["A+", "A-", "B+", "B-", "O+", "O-", "AB+", "AB-"] } },
+      { id: "5", name: "Diagnosis", type: "custom", options: { values: ["Diabetes", "Hypertension", "Asthma", "Arthritis", "Healthy"] } },
+      { id: "6", name: "Admission Date", type: "date" },
+    ],
+  },
+  {
+    id: "sales",
+    name: "Sales Data",
+    description: "Sales records with revenue and regions",
+    icon: "📊",
+    columns: [
+      { id: "1", name: "Salesperson", type: "name" },
+      { id: "2", name: "Region", type: "custom", options: { values: ["North", "South", "East", "West", "Central"] } },
+      { id: "3", name: "Product", type: "custom", options: { values: ["Software", "Hardware", "Services", "Support", "Training"] } },
+      { id: "4", name: "Revenue", type: "currency", options: { min: 1000, max: 100000, prefix: "$" } },
+      { id: "5", name: "Quarter", type: "custom", options: { values: ["Q1", "Q2", "Q3", "Q4"] } },
+      { id: "6", name: "Year", type: "integer", options: { min: 2020, max: 2024 } },
+    ],
+  },
+];
