@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Sparkles, SlidersHorizontal, Plus, RefreshCw, Check, FileSpreadsheet } from "lucide-react";
+import { Sparkles, SlidersHorizontal, Plus, RefreshCw, Check, FileSpreadsheet, Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
@@ -71,26 +72,51 @@ const Generator = () => {
 
     setIsGenerating(true);
     
-    // For now, use a simple template-based approach
-    // AI integration will be added via edge function
-    setTimeout(() => {
-      const defaultColumns: Column[] = [
-        { id: "1", name: "Name", type: "name" },
-        { id: "2", name: "Email", type: "email" },
-        { id: "3", name: "Age", type: "integer", options: { min: 18, max: 65 } },
-      ];
-      
-      setColumns(defaultColumns);
-      const generatedData = generateDataset(defaultColumns, rowCount, seedValue);
-      setDataset(generatedData);
-      setStats(calculateStats(generatedData));
-      setIsGenerating(false);
-      
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-dataset', {
+        body: { prompt, rowCount }
+      });
+
+      if (error) throw error;
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      const aiColumns: Column[] = data.columns.map((col: { id: string; name: string; type: string }) => ({
+        id: col.id,
+        name: col.name,
+        type: col.type as Column['type'],
+      }));
+
+      setColumns(aiColumns);
+      setDataset({
+        columns: aiColumns,
+        data: data.data,
+        rowCount: data.data.length,
+        seed: seedValue,
+      });
+      setStats(calculateStats({
+        columns: aiColumns,
+        data: data.data,
+        rowCount: data.data.length,
+        seed: seedValue,
+      }));
+
       toast({
         title: "Dataset Generated",
-        description: "Created dataset based on your prompt. Connect AI for smarter generation.",
+        description: `AI created ${data.data.length} rows with ${aiColumns.length} columns.`,
       });
-    }, 1000);
+    } catch (error) {
+      console.error('Error generating dataset:', error);
+      toast({
+        title: "Generation Failed",
+        description: error instanceof Error ? error.message : "Failed to generate dataset",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   const handleExport = (format: "csv" | "json" | "pdf") => {
