@@ -1,23 +1,36 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Database, Menu, X } from "lucide-react";
+import { Database, Menu, X, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { user, signOut, loading } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navLinks = [
     { href: "/", label: "Home" },
     { href: "/generator", label: "Generator" },
     { href: "/analyzer", label: "Analyzer" },
-    { href: "/templates", label: "Templates" },
   ];
 
   const isActive = (href: string) => {
     if (href === "/") return location.pathname === "/";
     return location.pathname.startsWith(href);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
 
   return (
@@ -53,20 +66,50 @@ const Header = () => {
 
           {/* Auth Buttons */}
           <div className="hidden md:flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="text-header-foreground hover:bg-header-foreground/10"
-              onClick={() => navigate("/auth")}
-            >
-              Login
-            </Button>
-            <Button
-              variant="outline"
-              className="bg-header-foreground text-primary hover:bg-header-foreground/90 border-0"
-              onClick={() => navigate("/auth?mode=signup")}
-            >
-              Sign Up
-            </Button>
+            {loading ? (
+              <div className="w-8 h-8 animate-pulse bg-header-foreground/20 rounded-full" />
+            ) : user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="text-header-foreground hover:bg-header-foreground/10 gap-2"
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="max-w-32 truncate">{user.email}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem className="text-muted-foreground text-xs">
+                    Signed in as
+                    <br />
+                    <span className="font-medium text-foreground">{user.email}</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="text-destructive cursor-pointer">
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button
+                  variant="ghost"
+                  className="text-header-foreground hover:bg-header-foreground/10"
+                  onClick={() => navigate("/auth")}
+                >
+                  Login
+                </Button>
+                <Button
+                  variant="outline"
+                  className="bg-header-foreground text-primary hover:bg-header-foreground/90 border-0"
+                  onClick={() => navigate("/auth?mode=signup")}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -97,26 +140,42 @@ const Header = () => {
                 </Link>
               ))}
               <div className="flex gap-2 mt-4 px-4">
-                <Button
-                  variant="ghost"
-                  className="flex-1 text-header-foreground hover:bg-header-foreground/10"
-                  onClick={() => {
-                    navigate("/auth");
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Login
-                </Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 bg-header-foreground text-primary hover:bg-header-foreground/90 border-0"
-                  onClick={() => {
-                    navigate("/auth?mode=signup");
-                    setMobileMenuOpen(false);
-                  }}
-                >
-                  Sign Up
-                </Button>
+                {user ? (
+                  <Button
+                    variant="ghost"
+                    className="flex-1 text-header-foreground hover:bg-header-foreground/10"
+                    onClick={() => {
+                      handleSignOut();
+                      setMobileMenuOpen(false);
+                    }}
+                  >
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </Button>
+                ) : (
+                  <>
+                    <Button
+                      variant="ghost"
+                      className="flex-1 text-header-foreground hover:bg-header-foreground/10"
+                      onClick={() => {
+                        navigate("/auth");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Login
+                    </Button>
+                    <Button
+                      variant="outline"
+                      className="flex-1 bg-header-foreground text-primary hover:bg-header-foreground/90 border-0"
+                      onClick={() => {
+                        navigate("/auth?mode=signup");
+                        setMobileMenuOpen(false);
+                      }}
+                    >
+                      Sign Up
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
