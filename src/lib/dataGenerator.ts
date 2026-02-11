@@ -95,6 +95,9 @@ const generateValue = (column: Column): any => {
       }
       return faker.lorem.word();
     
+    case "other":
+      return faker.lorem.words({ min: 1, max: 3 });
+    
     default:
       return faker.lorem.word();
   }

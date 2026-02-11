@@ -22,7 +22,8 @@ export type ColumnType =
   | "jobTitle"
   | "currency"
   | "uuid"
-  | "custom";
+  | "custom"
+  | "other";
 
 export interface ColumnOptions {
   min?: number;

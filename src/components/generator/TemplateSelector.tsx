@@ -1,4 +1,4 @@
-import { FileSpreadsheet, Users, ShoppingCart, Stethoscope } from "lucide-react";
+import { FileSpreadsheet, Users, ShoppingCart, Stethoscope, ClipboardList } from "lucide-react";
 import { DatasetTemplate } from "@/types/dataset";
 
 interface TemplateSelectorProps {
@@ -13,6 +13,7 @@ const iconMap: Record<string, React.ReactNode> = {
   "🛒": <ShoppingCart className="w-4 h-4" />,
   "🏥": <Stethoscope className="w-4 h-4" />,
   "📊": <FileSpreadsheet className="w-4 h-4" />,
+  "📋": <ClipboardList className="w-4 h-4" />,
 };
 
 const TemplateSelector = ({ templates, selectedTemplate, onSelect }: TemplateSelectorProps) => {
