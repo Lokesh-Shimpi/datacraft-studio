@@ -69,4 +69,18 @@ export const datasetTemplates: DatasetTemplate[] = [
       { id: "6", name: "Year", type: "integer", options: { min: 2020, max: 2024 } },
     ],
   },
+  {
+    id: "survey",
+    name: "Survey Responses",
+    description: "Survey feedback with ratings and demographics",
+    icon: "📋",
+    columns: [
+      { id: "1", name: "Respondent ID", type: "uuid" },
+      { id: "2", name: "Name", type: "name" },
+      { id: "3", name: "Age Group", type: "custom", options: { values: ["18-24", "25-34", "35-44", "45-54", "55+"] } },
+      { id: "4", name: "Satisfaction", type: "custom", options: { values: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"] } },
+      { id: "5", name: "Rating", type: "integer", options: { min: 1, max: 10 } },
+      { id: "6", name: "City", type: "city" },
+    ],
+  },
 ];

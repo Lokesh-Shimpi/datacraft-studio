@@ -28,6 +28,7 @@ const columnTypes: { value: ColumnType; label: string }[] = [
   { value: "currency", label: "Currency" },
   { value: "uuid", label: "UUID" },
   { value: "custom", label: "Custom List" },
+  { value: "other", label: "Other" },
 ];
 
 const ColumnEditor = ({ columns, onSave, onClose }: ColumnEditorProps) => {
