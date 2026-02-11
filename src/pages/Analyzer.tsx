@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
+import { Checkbox } from "@/components/ui/checkbox";
 import Layout from "@/components/layout/Layout";
 import { parseCSV } from "@/lib/exportUtils";
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +13,14 @@ import { supabase } from "@/integrations/supabase/client";
 import { LineChart as RechartsLine, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import type { Json } from "@/integrations/supabase/types";
 
+const CHART_TYPES = [
+  { id: "line", label: "Line Graph" },
+  { id: "histogram", label: "Histogram" },
+  { id: "pie", label: "Pie Chart" },
+  { id: "bar", label: "Bar Graph" },
+  { id: "exponential", label: "Exponential Graph" },
+] as const;
+
 const Analyzer = () => {
   const { toast } = useToast();
   const { user } = useAuth();
@@ -19,6 +28,7 @@ const Analyzer = () => {
   const [data, setData] = useState<Record<string, any>[]>([]);
   const [prompt, setPrompt] = useState("");
   const [outputType, setOutputType] = useState("viz");
+  const [selectedChartTypes, setSelectedChartTypes] = useState<string[]>(["line"]);
   const [hasResults, setHasResults] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -191,6 +201,28 @@ st.plotly_chart(fig)`;
                         <Label htmlFor="both">Generate Code + Visualization</Label>
                       </div>
                     </RadioGroup>
+
+                    {(outputType === "viz" || outputType === "both") && (
+                      <div className="mt-4">
+                        <h4 className="font-medium text-foreground mb-2">Chart Types</h4>
+                        <div className="flex flex-wrap gap-3">
+                          {CHART_TYPES.map((ct) => (
+                            <div key={ct.id} className="flex items-center space-x-2">
+                              <Checkbox
+                                id={`chart-${ct.id}`}
+                                checked={selectedChartTypes.includes(ct.id)}
+                                onCheckedChange={(checked) => {
+                                  setSelectedChartTypes((prev) =>
+                                    checked ? [...prev, ct.id] : prev.filter((t) => t !== ct.id)
+                                  );
+                                }}
+                              />
+                              <Label htmlFor={`chart-${ct.id}`} className="text-sm">{ct.label}</Label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   <Button
